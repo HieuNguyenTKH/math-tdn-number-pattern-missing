@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Pattern Mission</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg1: #02080c;
+      --bg2: #062027;
+      --panel: rgba(5, 27, 34, 0.90);
+      --panel2: rgba(8, 42, 50, 0.84);
+      --line: rgba(47, 255, 232, 0.28);
+      --text: #eaffff;
+      --muted: #9ed7d4;
+      --cyan: #2fffe8;
+      --blue: #00a3ff;
+      --violet: #ff3df2;
+      --orange: #ffc857;
+      --green: #6dff8f;
+      --red: #ff4d7d;
+      --shadow: 0 22px 54px rgba(0, 0, 0, 0.46);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Roboto, Arial, Helvetica, sans-serif !important;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(47, 255, 232, 0.18), transparent 26%),
+        radial-gradient(circle at 88% 13%, rgba(255, 61, 242, 0.20), transparent 26%),
+        radial-gradient(circle at 50% 95%, rgba(109, 255, 143, 0.12), transparent 30%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 14px;
+      overflow: auto;
+    }
+
+    .language-toggle {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 80;
+      border: 1px solid rgba(47, 255, 232, 0.42);
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: rgba(2, 20, 28, 0.88);
+      color: #dffdfa;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      box-shadow: 0 0 26px rgba(255, 61, 242, 0.18), inset 0 0 0 1px rgba(255,255,255,0.035);
+      backdrop-filter: blur(8px);
+      transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .language-toggle:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 61, 242, 0.56);
+      box-shadow: 0 0 30px rgba(47, 255, 232, 0.22);
+    }
+
+    .game {
+      position: relative;
+      width: min(1180px, calc(100vw - 28px));
+      min-width: 320px;
+      height: auto;
+      min-height: auto;
+      background: linear-gradient(180deg, rgba(2, 24, 32, 0.97), rgba(1, 10, 16, 0.99));
+      border: 1px solid rgba(47, 255, 232, 0.30);
+      border-radius: 26px;
+      box-shadow: var(--shadow), 0 0 48px rgba(255, 61, 242, 0.16);
+      overflow: visible;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .game::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 26px;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, transparent 0%, rgba(47, 255, 232, 0.045) 50%, transparent 100%),
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.023) 0 1px, transparent 1px 30px);
+      opacity: 0.8;
+    }
+
+    header {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(90deg, rgba(47, 255, 232,0.10), rgba(255, 61, 242,0.10), rgba(109, 255, 143,0.06));
+      border-radius: 26px 26px 0 0;
+    }
+
+    .brand-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1px solid rgba(47, 255, 232, 0.42);
+      background: rgba(47, 255, 232, 0.10);
+      color: #bffdf7;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      box-shadow: 0 0 22px rgba(47, 255, 232, 0.18);
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(32px, 4.3vw, 54px);
+      line-height: 1;
+      font-weight: 900 !important;
+      letter-spacing: 0.015em;
+      text-shadow: 0 0 30px rgba(255, 61, 242, 0.38), 0 0 20px rgba(47, 255, 232,0.22);
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(14px, 1.6vw, 17px);
+      line-height: 1.4;
+    }
+
+    .hud {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(98px, 118px));
+      gap: 10px;
+    }
+
+    .pill {
+      padding: 10px 10px 9px;
+      border-radius: 17px;
+      border: 1px solid rgba(47, 255, 232, 0.28);
+      background: linear-gradient(180deg, rgba(8, 52, 61, 0.94), rgba(3, 21, 29, 0.96));
+      text-align: center;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.025), 0 0 20px rgba(255, 61, 242, 0.14);
+    }
+
+    .pill span {
+      display: block;
+      color: #9fd5ff;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .pill b {
+      display: inline-block;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .countdown b { color: #ffd8be; }
+    .countdown.tick-beat b { animation: clockJump 0.32s ease; }
+
+    main {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(390px, 0.95fr) minmax(420px, 1.35fr);
+      gap: 16px;
+      padding: 16px;
+      align-items: stretch;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, var(--panel), var(--panel2));
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 14px 30px rgba(0,0,0,0.26);
+    }
+
+    .problem-panel {
+      display: grid;
+      grid-template-rows: auto auto auto;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .panel-tag {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 61, 242, 0.32);
+      background: rgba(255, 61, 242, 0.10);
+      color: #ffd7fb;
+      font-size: 17px;
+      letter-spacing: 0.02em;
+    }
+
+    .problem-card {
+      border-radius: 20px;
+      padding: 18px 18px;
+      background: rgba(2, 20, 28, 0.80);
+      border: 1px solid rgba(47, 255, 232, 0.24);
+      line-height: 1.55;
+      color: #eaffff;
+      font-size: clamp(18px, 1.65vw, 21px);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.025), 0 0 26px rgba(47, 255, 232,0.07);
+    }
+
+    .problem-card p {
+      margin: 0 0 13px;
+    }
+
+    .problem-card p:last-child { margin-bottom: 0; }
+    .accent { color: #7ffdf0; }
+    .accent-orange { color: #ffbdf9; }
+
+    .street-wrap {
+      display: grid;
+      gap: 12px;
+    }
+
+    .street {
+      position: relative;
+      min-height: 210px;
+      border-radius: 20px;
+      padding: 22px 13px 52px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(47, 255, 232,0.20), transparent 43%),
+        linear-gradient(180deg, #062a31 0 50%, #020b10 50% 100%);
+      border: 1px solid rgba(47, 255, 232, 0.28);
+      overflow: hidden;
+    }
+
+    .houses {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 9px;
+      align-items: stretch;
+    }
+
+    .house {
+      position: relative;
+      min-height: 48px;
+      border: 1px solid rgba(47, 255, 232, 0.25);
+      border-radius: 15px;
+      padding: 11px 12px;
+      background: linear-gradient(180deg, rgba(5, 42, 50, 0.95), rgba(2, 24, 32, 0.98));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.025), 0 0 18px rgba(255, 61, 242,0.10);
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+      color: var(--text);
+      text-align: left;
+    }
+
+    .house::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(47, 255, 232,0.13);
+      border: 1px solid rgba(47, 255, 232,0.36);
+      color: #bffdf7;
+      font-size: 18px;
+      box-shadow: 0 0 18px rgba(47, 255, 232,0.14);
+    }
+
+    .house span {
+      position: relative;
+      z-index: 1;
+      display: block;
+      padding-left: 46px;
+      font-size: clamp(17px, 1.45vw, 20px);
+      line-height: 1.35;
+    }
+
+    .house:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.04);
+    }
+
+    .house.selected {
+      background: linear-gradient(180deg, rgba(13, 83, 56, 0.95), rgba(9, 52, 38, 0.98));
+      border-color: rgba(71,240,170,0.74);
+      box-shadow: 0 0 20px rgba(71,240,170,0.20);
+    }
+
+    .road-label {
+      position: absolute;
+      left: 15px;
+      right: 15px;
+      bottom: 12px;
+      color: #d4fffb;
+      font-size: 14px;
+      line-height: 1.3;
+      letter-spacing: 0.01em;
+    }
+
+    .note {
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(47, 255, 232,0.22);
+      background: rgba(47, 255, 232,0.07);
+      color: #dcfffb;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .mission-panel {
+      display: grid;
+      grid-template-rows: auto auto auto minmax(0, auto) auto;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .mission-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .mission-tag,
+    .thunder,
+    .signal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 13px;
+      border-radius: 999px;
+      font-size: 14px;
+      letter-spacing: 0.03em;
+    }
+
+    .mission-tag {
+      background: rgba(255, 61, 242, 0.12);
+      border: 1px solid rgba(255, 61, 242, 0.34);
+      color: #ffd7fb;
+    }
+
+    .thunder {
+      background: rgba(255, 147, 77, 0.11);
+      border: 1px solid rgba(255, 147, 77, 0.28);
+      color: #ffd8be;
+    }
+
+    .question-box {
+      border-radius: 20px;
+      padding: 20px;
+      min-height: 118px;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(5, 44, 54, 0.98), rgba(2, 18, 28, 0.96));
+      border: 1px solid rgba(47, 255, 232, 0.30);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.025), 0 0 28px rgba(255, 61, 242, 0.14);
+    }
+
+    .question {
+      margin: 0;
+      font-size: clamp(25px, 2.7vw, 36px);
+      line-height: 1.22;
+      letter-spacing: 0.005em;
+    }
+
+    .prompt-bar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .prompt {
+      padding: 13px 15px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(47, 255, 232, 0.20);
+      color: #deebff;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .signal {
+      min-width: 132px;
+      background: rgba(71,240,170,0.105);
+      border: 1px solid rgba(71,240,170,0.23);
+      color: #c7ffe6;
+      text-align: center;
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      align-content: start;
+    }
+
+    .answer {
+      border: 1px solid rgba(47, 255, 232, 0.26);
+      border-radius: 18px;
+      padding: 17px 17px;
+      background: linear-gradient(180deg, rgba(5, 44, 54, 0.96), rgba(2, 14, 22, 0.98));
+      color: var(--text);
+      text-align: left;
+      font-size: clamp(17px, 1.6vw, 20px);
+      line-height: 1.35;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.025);
+    }
+
+    .answer:hover {
+      transform: translateY(-2px);
+      border-color: rgba(47, 255, 232,0.46);
+      box-shadow: 0 0 22px rgba(47, 255, 232,0.14);
+    }
+
+    .answer.correct {
+      background: linear-gradient(180deg, rgba(13, 83, 56, 0.97), rgba(9, 52, 38, 0.99));
+      border-color: rgba(71,240,170,0.74);
+      color: #d8ffeb;
+      box-shadow: 0 0 22px rgba(71,240,170,0.20);
+    }
+
+    .answer.wrong {
+      background: linear-gradient(180deg, rgba(112, 25, 49, 0.97), rgba(69, 13, 29, 0.99));
+      border-color: rgba(255,102,132,0.74);
+      color: #ffdde4;
+      animation: shake 0.28s ease;
+      box-shadow: 0 0 22px rgba(255,102,132,0.20);
+    }
+
+    .meter-wrap {
+      display: grid;
+      gap: 8px;
+      align-self: end;
+    }
+
+    .meter-head {
+      display: flex;
+      justify-content: space-between;
+      color: #b6c6e7;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .meter {
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      border: 1px solid rgba(127, 156, 255, 0.17);
+    }
+
+    .meter-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cyan), var(--blue), var(--violet), var(--orange));
+      box-shadow: 0 0 20px rgba(47, 255, 232,0.25);
+      transition: width 0.3s ease;
+    }
+
+    .control,
+    .sound-toggle {
+      border: 0;
+      border-radius: 17px;
+      padding: 15px 18px;
+      font-size: 17px;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    }
+
+    .control:hover,
+    .sound-toggle:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.05);
+    }
+
+    .control.primary {
+      background: linear-gradient(90deg, var(--cyan), var(--blue));
+      color: #04101f;
+      box-shadow: 0 0 22px rgba(255, 61, 242,0.30);
+    }
+
+    .sound-toggle {
+      border: 1px solid rgba(127,156,255,0.24);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 14px 18px;
+      border-top: 1px solid var(--line);
+      background: rgba(8, 13, 30, 0.78);
+      color: #cde0ff;
+      font-size: 15px;
+      line-height: 1.35;
+      text-align: center;
+      white-space: nowrap;
+      overflow-x: auto;
+      border-radius: 0 0 26px 26px;
+    }
+
+    .intro-screen,
+    .result-screen {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 18px;
+      z-index: 30;
+      overflow: auto;
+      backdrop-filter: blur(8px);
+      background:
+        radial-gradient(circle at 50% 30%, rgba(255, 61, 242, 0.22), transparent 28%),
+        radial-gradient(circle at 52% 72%, rgba(47, 255, 232, 0.14), transparent 30%),
+        rgba(4, 8, 20, 0.78);
+    }
+
+    .intro-screen.show,
+    .result-screen.show { display: flex; }
+
+    .intro-card,
+    .result-card {
+      position: relative;
+      width: min(760px, calc(100vw - 36px));
+      max-height: none;
+      padding: clamp(24px, 4vw, 38px);
+      overflow: hidden;
+      border-radius: 32px;
+      border: 1px solid rgba(47, 255, 232, 0.36);
+      background: linear-gradient(180deg, rgba(40, 8, 17, 0.985), rgba(14, 4, 8, 0.99));
+      box-shadow: 0 32px 74px rgba(0,0,0,0.52), 0 0 52px rgba(255, 61, 242,0.22);
+      text-align: center;
+      color: var(--text);
+      margin: auto 0;
+    }
+
+    .intro-card::before,
+    .result-card::before {
+      content: "";
+      position: absolute;
+      width: 390px;
+      height: 390px;
+      left: 50%;
+      top: -210px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      border: 1px solid rgba(47, 255, 232, 0.26);
+      box-shadow: 0 0 62px rgba(255, 61, 242,0.20), inset 0 0 44px rgba(47, 255, 232,0.09);
+      animation: rotateAura 8s linear infinite;
+    }
+
+    .intro-kicker,
+    .result-kicker {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+      padding: 9px 15px;
+      border-radius: 999px;
+      border: 1px solid rgba(47, 255, 232, 0.36);
+      background: rgba(47, 255, 232,0.10);
+      color: #bffdf7;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .intro-card h2,
+    .result-card h2 {
+      position: relative;
+      margin: 0;
+      font-size: clamp(40px, 8vw, 62px);
+      line-height: 0.98;
+      letter-spacing: 0.02em;
+      text-shadow: 0 0 30px rgba(255, 61, 242,0.38);
+    }
+
+    .intro-card p,
+    .result-card p {
+      position: relative;
+      margin: 16px auto 0;
+      max-width: 560px;
+      color: #d2def7;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .intro-content {
+      position: relative;
+      display: grid;
+      gap: 8px;
+      margin: 18px auto 0;
+      max-width: 620px;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(47, 255, 232, 0.24);
+      background: rgba(2, 22, 30, 0.76);
+      text-align: left;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.025), 0 0 24px rgba(255, 61, 242, 0.10);
+    }
+
+    .intro-content div {
+      color: #dffdfa;
+      font-size: clamp(15px, 1.8vw, 18px);
+      line-height: 1.35;
+    }
+
+    .intro-content span {
+      color: #7ffdf0;
+    }
+
+    .intro-stats {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 24px 0;
+    }
+
+    .intro-stat,
+    .result-badge {
+      padding: 12px 10px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(127,156,255,0.20);
+      color: #e8f3ff;
+    }
+
+    .intro-stat span {
+      display: block;
+      margin-top: 4px;
+      color: #a9eaff;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .intro-actions {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .result-screen.won {
+      background:
+        radial-gradient(circle at 50% 40%, rgba(109, 255, 143,0.18), transparent 28%),
+        radial-gradient(circle at 50% 68%, rgba(47, 255, 232,0.18), transparent 30%),
+        rgba(4, 8, 20, 0.80);
+    }
+
+    .result-screen.lost {
+      background:
+        radial-gradient(circle at 50% 40%, rgba(255,102,132,0.18), transparent 30%),
+        rgba(4, 8, 20, 0.80);
+    }
+
+    .big-score {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin: 16px 0;
+      background: linear-gradient(135deg, var(--orange), var(--cyan));
+      color: #06111f;
+      font-size: 45px;
+      box-shadow: 0 0 34px rgba(47, 255, 232,0.34);
+    }
+
+    .result-screen.won .big-score { animation: victoryPulse 1.1s ease-in-out infinite; }
+
+    .result-badges {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 12px 0 8px;
+    }
+
+    .result-badge {
+      padding: 9px 13px;
+      border-radius: 999px;
+      color: #dbeaff;
+      font-size: 14px;
+    }
+
+    #playAgainBtn {
+      position: relative;
+      margin-top: 16px;
+      min-width: 170px;
+    }
+
+    .game.combo-glow {
+      box-shadow:
+        0 22px 54px rgba(0, 0, 0, 0.46),
+        0 0 42px rgba(255, 61, 242, 0.46),
+        0 0 86px rgba(47, 255, 232, 0.24);
+      animation: comboShock 0.48s ease;
+    }
+
+    .game.combo-glow .pill {
+      border-color: rgba(47, 255, 232, 0.64);
+      box-shadow: 0 0 26px rgba(255, 61, 242, 0.26), inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    .score-pop {
+      position: fixed;
+      z-index: 60;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      padding: 9px 15px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(47, 255, 232,0.98), rgba(255, 61, 242,0.98));
+      color: #06111f;
+      font-size: 27px;
+      letter-spacing: 0.02em;
+      box-shadow: 0 0 32px rgba(47, 255, 232,0.42);
+      animation: scorePop 0.94s cubic-bezier(.18, .9, .18, 1) forwards;
+    }
+
+    .score-pop.bad {
+      background: linear-gradient(90deg, rgba(255,102,132,0.98), rgba(255,147,77,0.98));
+      color: #fff4f6;
+      box-shadow: 0 0 28px rgba(255,102,132,0.38);
+    }
+
+    .burst-piece {
+      position: fixed;
+      z-index: 58;
+      left: var(--x);
+      top: var(--y);
+      width: var(--s);
+      height: var(--s);
+      border-radius: 3px;
+      pointer-events: none;
+      background: var(--c);
+      box-shadow: 0 0 13px var(--c);
+      animation: burstFly 0.9s ease-out forwards;
+    }
+
+    .combo-ribbon {
+      position: fixed;
+      z-index: 59;
+      left: 50%;
+      top: 104px;
+      transform: translateX(-50%);
+      pointer-events: none;
+      padding: 11px 19px;
+      border-radius: 999px;
+      background: rgba(8, 13, 30, 0.86);
+      border: 1px solid rgba(47, 255, 232, 0.48);
+      color: #ddfffb;
+      font-size: 18px;
+      letter-spacing: 0.055em;
+      text-transform: uppercase;
+      box-shadow: 0 0 34px rgba(255, 61, 242,0.30);
+      animation: ribbonPop 0.96s ease forwards;
+    }
+
+    body :not(h1) {
+      font-weight: 400 !important;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      35% { transform: translateX(-7px); }
+      70% { transform: translateX(7px); }
+    }
+
+    @keyframes clockJump {
+      0%, 100% { transform: translateY(0) scale(1); }
+      35% { transform: translateY(-4px) scale(1.16); color: #fff4df; }
+      70% { transform: translateY(2px) scale(0.98); }
+    }
+
+    @keyframes comboShock {
+      0% { transform: scale(1); }
+      36% { transform: scale(1.012); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes scorePop {
+      0% { opacity: 0; transform: translate(-50%, -30%) scale(0.55); }
+      15% { opacity: 1; transform: translate(-50%, -80%) scale(1.16); }
+      100% { opacity: 0; transform: translate(-50%, -185%) scale(0.88); }
+    }
+
+    @keyframes burstFly {
+      0% { opacity: 1; transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--r)) scale(0.55); }
+    }
+
+    @keyframes ribbonPop {
+      0% { opacity: 0; transform: translate(-50%, -20px) scale(0.82); }
+      20% { opacity: 1; transform: translate(-50%, 0) scale(1.04); }
+      100% { opacity: 0; transform: translate(-50%, -44px) scale(0.94); }
+    }
+
+    @keyframes rotateAura {
+      from { transform: translateX(-50%) rotate(0deg); }
+      to { transform: translateX(-50%) rotate(360deg); }
+    }
+
+    @keyframes victoryPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 34px rgba(47, 255, 232,0.34); }
+      50% { transform: scale(1.06); box-shadow: 0 0 50px rgba(255, 61, 242,0.46); }
+    }
+
+    @media (max-width: 940px) {
+      body { padding: 10px; }
+      .game { width: min(100%, calc(100vw - 20px)); }
+      header { grid-template-columns: 1fr; }
+      .hud { grid-template-columns: repeat(3, 1fr); }
+      main { grid-template-columns: 1fr; }
+      .problem-card { font-size: 19px; }
+    }
+
+    @media (max-width: 600px) {
+      header, main { padding: 12px; }
+      .problem-panel, .mission-panel { padding: 14px; }
+      .hud { grid-template-columns: 1fr; }
+      .houses { grid-template-columns: 1fr; row-gap: 9px; }
+      .answers, .prompt-bar { grid-template-columns: 1fr; }
+      .street { min-height: 300px; }
+      .intro-stats { grid-template-columns: 1fr; }
+      footer { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <button class="language-toggle" id="languageToggle">VI</button>
+  <div class="game" id="game">
+    <header>
+      <div>
+        <div class="brand-kicker" id="brandKicker">Math Mission • Futuristic Quiz</div>
+        <h1 id="gameTitle">Number Pattern Mission</h1>
+        <p class="subtitle" id="subtitle">Find the missing numbers and discover each rule.</p>
+      </div>
+      <div class="hud">
+        <div class="pill"><span id="scoreLabel">Score</span><b id="score">0</b></div>
+        <div class="pill"><span>Combo</span><b id="combo">x1</b></div>
+        <div class="pill countdown" id="clockPill"><span id="timeLabel">Time</span><b id="time">69</b>s</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel problem-panel">
+        <div class="panel-tag" id="problemTag">Problem</div>
+        <div class="problem-card">
+          <p id="problemIntro"><span class="accent">Find the missing numbers</span> in the number patterns.</p>
+          <p><span class="accent">a)</span> 1, 2, 4, 8, 16, ( ___ ), ( ___ ), ...</p>
+          <p><span class="accent">b)</span> 1, 4, 9, 16, ( ___ ), ( ___ ), ...</p>
+          <p><span class="accent">c)</span> 2, 6, 12, 20, 30, ( ___ ), ( ___ ), ...</p>
+          <p><span class="accent">d)</span> 1, 4, 7, 10, 13, ( ___ ), ( ___ ), ...</p>
+        </div>
+        <div class="street-wrap">
+          <div class="street" aria-label="Number pattern cards">
+            <div class="houses" id="houses"></div>
+            <div class="road-label" id="roadLabel">Tap a row to review its rule.</div>
+          </div>
+          <div class="note" id="coach">Press Start to begin. You can tap any pattern row to preview its rule.</div>
+        </div>
+      </section>
+
+      <section class="panel mission-panel">
+        <div class="mission-head">
+          <div class="mission-tag" id="missionTag">Question 0 / 12</div>
+          <div class="thunder" id="signal">Ready</div>
+        </div>
+
+        <div class="question-box">
+          <h2 class="question" id="question">Press “Start” to receive the first question.</h2>
+        </div>
+
+        <div class="prompt-bar">
+          <div class="prompt" id="promptText">Each pattern has three quick rounds: rule, first blank, second blank.</div>
+          <div class="signal" id="focusBox">Target: 12/12</div>
+        </div>
+
+        <div class="answers" id="answers"></div>
+
+        <div class="meter-wrap">
+          <div class="meter-head"><span id="progressLabel">Mission Progress</span><span id="progressText">0%</span></div>
+          <div class="meter"><div class="meter-fill" id="progress"></div></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>AI by TKH + Partners - 0902 68 96 68</footer>
+  </div>
+
+  <div class="intro-screen show" id="introScreen">
+    <div class="intro-card">
+      <div class="intro-kicker" id="introKicker">Mission Briefing</div>
+      <h2 id="introTitle">Ready<br>To Play?</h2>
+      <p id="introText">Read the content first, then solve each pattern through 12 fast quiz rounds.</p>
+      <div class="intro-content" aria-label="Problem content">
+        <div id="introProblemIntro"><span>Find the missing numbers</span> in the number patterns.</div>
+        <div><span>(a)</span> 1, 2, 4, 8, 16, ( ___ ), ( ___ ), ...</div>
+        <div><span>(b)</span> 1, 4, 9, 16, ( ___ ), ( ___ ), ...</div>
+        <div><span>(c)</span> 2, 6, 12, 20, 30, ( ___ ), ( ___ ), ...</div>
+        <div><span>(d)</span> 1, 4, 7, 10, 13, ( ___ ), ( ___ ), ...</div>
+      </div>
+      <div class="intro-stats">
+        <div class="intro-stat">69s<span id="introTimeLabel">Time</span></div>
+        <div class="intro-stat">12<span id="introQuestionsLabel">Questions</span></div>
+        <div class="intro-stat">x5<span id="introComboLabel">Max Combo</span></div>
+      </div>
+      <div class="intro-actions">
+        <button class="control primary" id="introStartBtn">Start</button>
+        <button class="sound-toggle" id="soundToggle">Sound: ON</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="result-screen" id="resultScreen">
+    <div class="result-card">
+      <div class="result-kicker" id="resultKicker">Mission Result</div>
+      <h2 id="resultTitle">Complete!</h2>
+      <div class="big-score" id="finalScore">0</div>
+      <div class="result-badges">
+        <span class="result-badge" id="badgeRules">Pattern Rules</span>
+        <span class="result-badge" id="badgeMissing">Missing Numbers</span>
+        <span class="result-badge" id="badgeFast">Fast Answers</span>
+      </div>
+      <p id="resultMessage"></p>
+      <p id="rememberText">Remember: look at how each step changes, then extend the same rule to the blanks.</p>
+      <button class="control primary" id="playAgainBtn">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    const START_TIME = 69;
+    const VOLUME_BOOST = 2.25;
+    const patterns = [
+      {
+        label: '(a)',
+        given: '1, 2, 4, 8, 16, ( ___ ), ( ___ ), ...',
+        full: '1, 2, 4, 8, 16, 32, 64, ...',
+        rule: {
+          en: 'Multiply by 2 each time.',
+          vi: 'Nhân 2 ở mỗi bước.'
+        },
+        highlight: 'a'
+      },
+      {
+        label: '(b)',
+        given: '1, 4, 9, 16, ( ___ ), ( ___ ), ...',
+        full: '1, 4, 9, 16, 25, 36, ...',
+        rule: {
+          en: 'Square numbers: 1×1, 2×2, 3×3, 4×4, 5×5, 6×6.',
+          vi: 'Dãy số chính phương: 1×1, 2×2, 3×3, 4×4, 5×5, 6×6.'
+        },
+        highlight: 'b'
+      },
+      {
+        label: '(c)',
+        given: '2, 6, 12, 20, 30, ( ___ ), ( ___ ), ...',
+        full: '2, 6, 12, 20, 30, 42, 56, ...',
+        rule: {
+          en: 'Add consecutive even numbers: +4, +6, +8, +10, +12, +14.',
+          vi: 'Cộng các số chẵn liên tiếp: +4, +6, +8, +10, +12, +14.'
+        },
+        highlight: 'c'
+      },
+      {
+        label: '(d)',
+        given: '1, 4, 7, 10, 13, ( ___ ), ( ___ ), ...',
+        full: '1, 4, 7, 10, 13, 16, 19, ...',
+        rule: {
+          en: 'Add 3 each time.',
+          vi: 'Cộng thêm 3 ở mỗi bước.'
+        },
+        highlight: 'd'
+      }
+    ];
+
+    const questions = [
+      {
+        title: {
+          en: "Pattern (a): What is the rule?",
+          vi: "Dãy (a): Quy luật là gì?"
+        },
+        answers: [
+          { en: "Multiply by 2 each time", vi: "Nhân 2 mỗi bước" },
+          { en: "Add 2 each time", vi: "Cộng 2 mỗi bước" },
+          { en: "Multiply by 3 each time", vi: "Nhân 3 mỗi bước" },
+          { en: "Add 4 each time", vi: "Cộng 4 mỗi bước" }
+        ],
+        correct: 0,
+        highlight: "a",
+        signal: { en: "Pattern (a)", vi: "Dãy (a)" },
+        coach: {
+          en: "Correct! Each number is doubled: 1, 2, 4, 8, 16, 32, 64.",
+          vi: "Đúng rồi! Mỗi số được nhân đôi: 1, 2, 4, 8, 16, 32, 64."
+        }
+      },
+      {
+        title: {
+          en: "Pattern (a): What is the first missing number?",
+          vi: "Dãy (a): Số còn thiếu thứ nhất là gì?"
+        },
+        answers: ["24", "30", "32", "36"],
+        correct: 2,
+        highlight: "a",
+        signal: { en: "First blank", vi: "Ô trống 1" },
+        coach: { en: "Yes! 16 × 2 = 32.", vi: "Chính xác! 16 × 2 = 32." }
+      },
+      {
+        title: {
+          en: "Pattern (a): What is the second missing number?",
+          vi: "Dãy (a): Số còn thiếu thứ hai là gì?"
+        },
+        answers: ["48", "56", "64", "72"],
+        correct: 2,
+        highlight: "a",
+        signal: { en: "Second blank", vi: "Ô trống 2" },
+        coach: { en: "Great! 32 × 2 = 64.", vi: "Tuyệt vời! 32 × 2 = 64." }
+      },
+      {
+        title: {
+          en: "Pattern (b): What kind of numbers are these?",
+          vi: "Dãy (b): Đây là loại số nào?"
+        },
+        answers: [
+          { en: "Odd numbers", vi: "Số lẻ" },
+          { en: "Square numbers", vi: "Số chính phương" },
+          { en: "Prime numbers", vi: "Số nguyên tố" },
+          { en: "Multiples of 4 only", vi: "Chỉ là bội của 4" }
+        ],
+        correct: 1,
+        highlight: "b",
+        signal: { en: "Pattern (b)", vi: "Dãy (b)" },
+        coach: { en: "Correct! These are square numbers.", vi: "Đúng rồi! Đây là dãy số chính phương." }
+      },
+      {
+        title: {
+          en: "Pattern (b): What is the first missing number?",
+          vi: "Dãy (b): Số còn thiếu thứ nhất là gì?"
+        },
+        answers: ["20", "24", "25", "30"],
+        correct: 2,
+        highlight: "b",
+        signal: { en: "First blank", vi: "Ô trống 1" },
+        coach: { en: "Yes! The next square is 5 × 5 = 25.", vi: "Chính xác! Số chính phương tiếp theo là 5 × 5 = 25." }
+      },
+      {
+        title: {
+          en: "Pattern (b): What is the second missing number?",
+          vi: "Dãy (b): Số còn thiếu thứ hai là gì?"
+        },
+        answers: ["32", "36", "40", "49"],
+        correct: 1,
+        highlight: "b",
+        signal: { en: "Second blank", vi: "Ô trống 2" },
+        coach: { en: "Exactly! After 25 comes 6 × 6 = 36.", vi: "Đúng rồi! Sau 25 là 6 × 6 = 36." }
+      },
+      {
+        title: {
+          en: "Pattern (c): What is added between the terms?",
+          vi: "Dãy (c): Cộng thêm gì giữa các số?"
+        },
+        answers: ["+2, +4, +6, +8, +10, +12", "+4, +6, +8, +10, +12, +14", "+3, +5, +7, +9, +11, +13", { en: "×2 each time", vi: "Nhân 2 mỗi bước" }],
+        correct: 1,
+        highlight: "c",
+        signal: { en: "Pattern (c)", vi: "Dãy (c)" },
+        coach: {
+          en: "Nice! The differences are consecutive even numbers: +4, +6, +8, +10, +12, +14.",
+          vi: "Rất tốt! Hiệu là các số chẵn liên tiếp: +4, +6, +8, +10, +12, +14."
+        }
+      },
+      {
+        title: {
+          en: "Pattern (c): What is the first missing number?",
+          vi: "Dãy (c): Số còn thiếu thứ nhất là gì?"
+        },
+        answers: ["36", "40", "42", "44"],
+        correct: 2,
+        highlight: "c",
+        signal: { en: "First blank", vi: "Ô trống 1" },
+        coach: { en: "Correct! 30 + 12 = 42.", vi: "Đúng rồi! 30 + 12 = 42." }
+      },
+      {
+        title: {
+          en: "Pattern (c): What is the second missing number?",
+          vi: "Dãy (c): Số còn thiếu thứ hai là gì?"
+        },
+        answers: ["50", "54", "56", "60"],
+        correct: 2,
+        highlight: "c",
+        signal: { en: "Second blank", vi: "Ô trống 2" },
+        coach: { en: "Great! 42 + 14 = 56.", vi: "Tuyệt vời! 42 + 14 = 56." }
+      },
+      {
+        title: {
+          en: "Pattern (d): What is the rule?",
+          vi: "Dãy (d): Quy luật là gì?"
+        },
+        answers: [
+          { en: "Add 2 each time", vi: "Cộng 2 mỗi bước" },
+          { en: "Add 3 each time", vi: "Cộng 3 mỗi bước" },
+          { en: "Add 4 each time", vi: "Cộng 4 mỗi bước" },
+          { en: "Multiply by 3 each time", vi: "Nhân 3 mỗi bước" }
+        ],
+        correct: 1,
+        highlight: "d",
+        signal: { en: "Pattern (d)", vi: "Dãy (d)" },
+        coach: { en: "Correct! The pattern increases by 3 every time.", vi: "Đúng rồi! Mỗi bước cộng thêm 3." }
+      },
+      {
+        title: {
+          en: "Pattern (d): What is the first missing number?",
+          vi: "Dãy (d): Số còn thiếu thứ nhất là gì?"
+        },
+        answers: ["15", "16", "17", "18"],
+        correct: 1,
+        highlight: "d",
+        signal: { en: "First blank", vi: "Ô trống 1" },
+        coach: { en: "Yes! 13 + 3 = 16.", vi: "Chính xác! 13 + 3 = 16." }
+      },
+      {
+        title: {
+          en: "Pattern (d): What is the second missing number?",
+          vi: "Dãy (d): Số còn thiếu thứ hai là gì?"
+        },
+        answers: ["18", "19", "20", "21"],
+        correct: 1,
+        highlight: "d",
+        signal: { en: "Second blank", vi: "Ô trống 2" },
+        coach: { en: "Excellent! 16 + 3 = 19.", vi: "Xuất sắc! 16 + 3 = 19." }
+      }
+    ];
+
+    const i18n = {
+      en: {
+        htmlLang: 'en',
+        documentTitle: 'Number Pattern Mission',
+        switchLabel: 'VI',
+        brandKicker: 'Math Mission • Futuristic Quiz',
+        gameTitle: 'Number Pattern Mission',
+        subtitle: 'Find the missing numbers and discover each rule.',
+        scoreLabel: 'Score',
+        timeLabel: 'Time',
+        problemTag: 'Problem',
+        problemIntro: '<span class="accent">Find the missing numbers</span> in the number patterns.',
+        roadLabel: 'Tap a row to review its rule.',
+        initialCoach: 'Press Start to begin. You can tap any pattern row to preview its rule.',
+        missionZero: 'Question 0 / {total}',
+        missionCurrent: 'Question {current} / {total}',
+        ready: 'Ready',
+        initialQuestion: 'Press “Start” to receive the first question.',
+        promptInitial: 'Each pattern has three quick rounds: rule, first blank, second blank.',
+        promptPlay: 'Choose one correct answer. Faster answers earn a better bonus.',
+        targetInitial: 'Target: {total}/{total}',
+        targetCurrent: 'Target: {current}/{total}',
+        progressLabel: 'Mission Progress',
+        introKicker: 'Mission Briefing',
+        introTitle: 'Ready<br>To Play?',
+        introText: 'Read the content first, then solve each pattern through 12 fast quiz rounds.',
+        introProblemIntro: '<span>Find the missing numbers</span> in the number patterns.',
+        introTimeLabel: 'Time',
+        introQuestionsLabel: 'Questions',
+        introComboLabel: 'Max Combo',
+        startBtn: 'Start',
+        soundOn: 'Sound: ON',
+        soundOff: 'Sound: OFF',
+        resultKickerIdle: 'Mission Result',
+        resultKickerWon: 'Mission Clear',
+        resultKickerLost: 'Mission Timeout',
+        resultTitleIdle: 'Complete!',
+        resultTitleWon: 'MISSION CLEAR!',
+        resultTitleLost: 'TIME OUT!',
+        badgeRules: 'Pattern Rules',
+        badgeMissing: 'Missing Numbers',
+        badgeFast: 'Fast Answers',
+        rememberText: 'Remember: look at how each step changes, then extend the same rule to the blanks.',
+        playAgain: 'Play Again',
+        comboRibbon: 'COMBO x{combo} • SPEED UP!',
+        wrongCoach: 'Not quite. Look at the green answer and remember the rule.',
+        winMessage: 'Excellent! You completed all 12 quiz rounds. Missing numbers: (a) 32, 64; (b) 25, 36; (c) 42, 56; (d) 16, 19.',
+        loseMessage: 'You were close. Review the pattern rules, then try again.'
+      },
+      vi: {
+        htmlLang: 'vi',
+        documentTitle: 'Nhiệm Vụ Dãy Số',
+        switchLabel: 'EN',
+        brandKicker: 'Nhiệm Vụ Toán Học • Quiz Tương Lai',
+        gameTitle: 'Nhiệm Vụ Dãy Số',
+        subtitle: 'Tìm số còn thiếu và khám phá quy luật của từng dãy.',
+        scoreLabel: 'Điểm',
+        timeLabel: 'Thời gian',
+        problemTag: 'Đề bài',
+        problemIntro: '<span class="accent">Tìm các số còn thiếu</span> trong những dãy số sau.',
+        roadLabel: 'Chạm vào từng dòng để xem quy luật.',
+        initialCoach: 'Nhấn Start để bắt đầu. Có thể chạm vào từng dãy để xem trước quy luật.',
+        missionZero: 'Câu hỏi 0 / {total}',
+        missionCurrent: 'Câu hỏi {current} / {total}',
+        ready: 'Sẵn sàng',
+        initialQuestion: 'Nhấn “Start” để nhận câu hỏi đầu tiên.',
+        promptInitial: 'Mỗi dãy có 3 vòng nhanh: quy luật, ô trống thứ nhất, ô trống thứ hai.',
+        promptPlay: 'Chọn một đáp án đúng. Trả lời càng nhanh, điểm thưởng càng cao.',
+        targetInitial: 'Mục tiêu: {total}/{total}',
+        targetCurrent: 'Mục tiêu: {current}/{total}',
+        progressLabel: 'Tiến độ nhiệm vụ',
+        introKicker: 'Hướng Dẫn Nhiệm Vụ',
+        introTitle: 'Sẵn Sàng<br>Chơi Chưa?',
+        introText: 'Đọc đề trước, sau đó giải từng dãy qua 12 câu hỏi nhanh.',
+        introProblemIntro: '<span>Tìm các số còn thiếu</span> trong những dãy số sau.',
+        introTimeLabel: 'Thời gian',
+        introQuestionsLabel: 'Câu hỏi',
+        introComboLabel: 'Combo tối đa',
+        startBtn: 'Bắt đầu',
+        soundOn: 'Âm thanh: BẬT',
+        soundOff: 'Âm thanh: TẮT',
+        resultKickerIdle: 'Kết Quả Nhiệm Vụ',
+        resultKickerWon: 'Hoàn Thành Nhiệm Vụ',
+        resultKickerLost: 'Nhiệm Vụ Hết Giờ',
+        resultTitleIdle: 'Hoàn Thành!',
+        resultTitleWon: 'HOÀN THÀNH!',
+        resultTitleLost: 'HẾT GIỜ!',
+        badgeRules: 'Quy luật',
+        badgeMissing: 'Số còn thiếu',
+        badgeFast: 'Trả lời nhanh',
+        rememberText: 'Ghi nhớ: quan sát sự thay đổi giữa các số, rồi áp dụng quy luật đó cho ô trống.',
+        playAgain: 'Chơi lại',
+        comboRibbon: 'COMBO x{combo} • TĂNG TỐC!',
+        wrongCoach: 'Chưa đúng. Hãy xem đáp án màu xanh và ghi nhớ quy luật.',
+        winMessage: 'Xuất sắc! Bạn đã hoàn thành 12 câu hỏi. Số còn thiếu: (a) 32, 64; (b) 25, 36; (c) 42, 56; (d) 16, 19.',
+        loseMessage: 'Bạn gần hoàn thành rồi. Hãy xem lại quy luật và thử lại.'
+      }
+    };
+
+    let currentLang = 'en';
+
+    function text(key, values = {}) {
+      let value = i18n[currentLang][key] || i18n.en[key] || '';
+      Object.keys(values).forEach((name) => {
+        value = value.replaceAll(`{${name}}`, values[name]);
+      });
+      return value;
+    }
+
+    function localized(value) {
+      if (value && typeof value === 'object' && !Array.isArray(value)) return value[currentLang] || value.en || '';
+      return value;
+    }
+
+    let current = 0;
+    let score = 0;
+    let combo = 1;
+    let timeLeft = START_TIME;
+    let timer = null;
+    let active = false;
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    const gameEl = document.getElementById('game');
+    const scoreEl = document.getElementById('score');
+    const comboEl = document.getElementById('combo');
+    const timeEl = document.getElementById('time');
+    const clockPill = document.getElementById('clockPill');
+    const missionTag = document.getElementById('missionTag');
+    const signalEl = document.getElementById('signal');
+    const questionEl = document.getElementById('question');
+    const housesEl = document.getElementById('houses');
+    const answersEl = document.getElementById('answers');
+    const coachEl = document.getElementById('coach');
+    const promptText = document.getElementById('promptText');
+    const focusBox = document.getElementById('focusBox');
+    const progressEl = document.getElementById('progress');
+    const progressText = document.getElementById('progressText');
+    const introScreen = document.getElementById('introScreen');
+    const introStartBtn = document.getElementById('introStartBtn');
+    const soundToggle = document.getElementById('soundToggle');
+    const resultScreen = document.getElementById('resultScreen');
+    const finalScore = document.getElementById('finalScore');
+    const resultKicker = document.getElementById('resultKicker');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultMessage = document.getElementById('resultMessage');
+    const languageToggle = document.getElementById('languageToggle');
+    const brandKicker = document.getElementById('brandKicker');
+    const gameTitle = document.getElementById('gameTitle');
+    const subtitle = document.getElementById('subtitle');
+    const scoreLabel = document.getElementById('scoreLabel');
+    const timeLabel = document.getElementById('timeLabel');
+    const problemTag = document.getElementById('problemTag');
+    const problemIntro = document.getElementById('problemIntro');
+    const roadLabel = document.getElementById('roadLabel');
+    const progressLabel = document.getElementById('progressLabel');
+    const introKicker = document.getElementById('introKicker');
+    const introTitle = document.getElementById('introTitle');
+    const introText = document.getElementById('introText');
+    const introProblemIntro = document.getElementById('introProblemIntro');
+    const introTimeLabel = document.getElementById('introTimeLabel');
+    const introQuestionsLabel = document.getElementById('introQuestionsLabel');
+    const introComboLabel = document.getElementById('introComboLabel');
+    const badgeRules = document.getElementById('badgeRules');
+    const badgeMissing = document.getElementById('badgeMissing');
+    const badgeFast = document.getElementById('badgeFast');
+    const rememberText = document.getElementById('rememberText');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+
+    function ensureAudio() {
+      if (!soundEnabled) return null;
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return null;
+      if (!audioCtx) audioCtx = new AudioContext();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function tone(freq, delay = 0, duration = 0.13, type = 'sine', volume = 0.1) {
+      const ctx = ensureAudio();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const start = ctx.currentTime + delay;
+      const safeVolume = Math.min(0.55, volume * VOLUME_BOOST);
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, start);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(safeVolume, start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + duration + 0.035);
+    }
+
+    function noiseTick(delay = 0) {
+      const ctx = ensureAudio();
+      if (!ctx) return;
+      const start = ctx.currentTime + delay;
+      const buffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.025), ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+      const src = ctx.createBufferSource();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.setValueAtTime(1600, start);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.18, start + 0.006);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.028);
+      src.buffer = buffer;
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      src.start(start);
+      src.stop(start + 0.035);
+    }
+
+    function playStartSound() {
+      [196, 262, 330, 523].forEach((freq, i) => tone(freq, i * 0.055, 0.18, 'triangle', 0.075));
+    }
+
+    function playCorrectSound() {
+      [523, 659, 784, 1046].forEach((freq, i) => tone(freq, i * 0.045, 0.145, 'sine', 0.09));
+    }
+
+    function playWrongSound() {
+      const ctx = ensureAudio();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const now = ctx.currentTime;
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(210, now);
+      osc.frequency.exponentialRampToValueAtTime(78, now + 0.32);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.18, now + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.36);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.38);
+    }
+
+    function playTickSound() {
+      noiseTick(0);
+      tone(1120, 0.006, 0.035, 'square', 0.035);
+    }
+
+    function playVictorySound() {
+      [392, 523, 659, 784, 1046, 1318].forEach((freq, i) => tone(freq, i * 0.07, 0.24, 'triangle', 0.09));
+      setTimeout(() => [1046, 1318, 1568].forEach((freq, i) => tone(freq, i * 0.06, 0.26, 'sine', 0.085)), 420);
+    }
+
+    function centerOf(el) {
+      const rect = el.getBoundingClientRect();
+      return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    }
+
+    function scoreExplosion(text, anchor, bad = false) {
+      const point = centerOf(anchor || gameEl);
+      const pop = document.createElement('div');
+      pop.className = 'score-pop' + (bad ? ' bad' : '');
+      pop.textContent = text;
+      pop.style.left = point.x + 'px';
+      pop.style.top = point.y + 'px';
+      document.body.appendChild(pop);
+      setTimeout(() => pop.remove(), 1000);
+      burst(point.x, point.y, bad ? 'bad' : 'good', bad ? 16 : 24);
+    }
+
+    function burst(x, y, mode = 'good', amount = 20) {
+      const colors = mode === 'bad'
+        ? ['#ff4d7d', '#ffc857', '#ffd3dc']
+        : ['#2fffe8', '#00a3ff', '#ff3df2', '#ffc857', '#6dff8f'];
+      for (let i = 0; i < amount; i++) {
+        const piece = document.createElement('div');
+        const angle = (Math.PI * 2 * i / amount) + Math.random() * 0.35;
+        const distance = 52 + Math.random() * 84;
+        piece.className = 'burst-piece';
+        piece.style.setProperty('--x', x + 'px');
+        piece.style.setProperty('--y', y + 'px');
+        piece.style.setProperty('--dx', Math.cos(angle) * distance + 'px');
+        piece.style.setProperty('--dy', Math.sin(angle) * distance + 'px');
+        piece.style.setProperty('--r', (180 + Math.random() * 540) + 'deg');
+        piece.style.setProperty('--s', (5 + Math.random() * 7) + 'px');
+        piece.style.setProperty('--c', colors[Math.floor(Math.random() * colors.length)]);
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 940);
+      }
+    }
+
+    function comboGlow() {
+      gameEl.classList.remove('combo-glow');
+      void gameEl.offsetWidth;
+      gameEl.classList.add('combo-glow');
+      setTimeout(() => gameEl.classList.remove('combo-glow'), 520);
+    }
+
+    function comboRibbon(text) {
+      const ribbon = document.createElement('div');
+      ribbon.className = 'combo-ribbon';
+      ribbon.textContent = text;
+      document.body.appendChild(ribbon);
+      setTimeout(() => ribbon.remove(), 1000);
+    }
+
+    function victoryConfetti() {
+      const rect = gameEl.getBoundingClientRect();
+      for (let i = 0; i < 6; i++) {
+        setTimeout(() => {
+          const x = rect.left + rect.width * (0.12 + Math.random() * 0.76);
+          const y = rect.top + rect.height * (0.13 + Math.random() * 0.30);
+          burst(x, y, 'good', 26);
+        }, i * 170);
+      }
+    }
+
+    function shouldHighlight(pattern, mode) {
+      if (!mode) return false;
+      if (mode === 'all') return true;
+      if (pattern.highlight === mode) return true;
+      return false;
+    }
+
+    function renderHouses(highlightMode = '') {
+      housesEl.innerHTML = '';
+      patterns.forEach((pattern) => {
+        const btn = document.createElement('button');
+        btn.className = 'house';
+        btn.dataset.label = pattern.label;
+        if (shouldHighlight(pattern, highlightMode)) btn.classList.add('selected');
+        btn.innerHTML = `<span>${pattern.given}</span>`;
+        btn.title = `${pattern.label} ${pattern.given}`;
+        btn.addEventListener('click', () => {
+          coachEl.innerHTML = `<span class="accent">${pattern.label}</span> ${pattern.full}<br>${localized(pattern.rule)}`;
+        });
+        housesEl.appendChild(btn);
+      });
+    }
+
+    function setStaticLanguage() {
+      document.documentElement.lang = text('htmlLang');
+      document.title = text('documentTitle');
+      languageToggle.textContent = text('switchLabel');
+      languageToggle.title = currentLang === 'en' ? 'Switch to Vietnamese' : 'Chuyển sang tiếng Anh';
+      brandKicker.textContent = text('brandKicker');
+      gameTitle.textContent = text('gameTitle');
+      subtitle.textContent = text('subtitle');
+      scoreLabel.textContent = text('scoreLabel');
+      timeLabel.textContent = text('timeLabel');
+      problemTag.textContent = text('problemTag');
+      problemIntro.innerHTML = text('problemIntro');
+      roadLabel.textContent = text('roadLabel');
+      progressLabel.textContent = text('progressLabel');
+      introKicker.textContent = text('introKicker');
+      introTitle.innerHTML = text('introTitle');
+      introText.textContent = text('introText');
+      introProblemIntro.innerHTML = text('introProblemIntro');
+      introTimeLabel.textContent = text('introTimeLabel');
+      introQuestionsLabel.textContent = text('introQuestionsLabel');
+      introComboLabel.textContent = text('introComboLabel');
+      introStartBtn.textContent = text('startBtn');
+      soundToggle.textContent = soundEnabled ? text('soundOn') : text('soundOff');
+      badgeRules.textContent = text('badgeRules');
+      badgeMissing.textContent = text('badgeMissing');
+      badgeFast.textContent = text('badgeFast');
+      rememberText.textContent = text('rememberText');
+      playAgainBtn.textContent = text('playAgain');
+      if (!resultScreen.classList.contains('show')) {
+        resultKicker.textContent = text('resultKickerIdle');
+        resultTitle.textContent = text('resultTitleIdle');
+      }
+    }
+
+    function refreshLanguage() {
+      setStaticLanguage();
+      if (resultScreen.classList.contains('show')) {
+        const won = resultScreen.classList.contains('won');
+        finish(won, true);
+        return;
+      }
+      if (active && current < questions.length) {
+        showQuestion();
+        return;
+      }
+      missionTag.textContent = text('missionZero', { total: questions.length });
+      signalEl.textContent = text('ready');
+      questionEl.textContent = text('initialQuestion');
+      promptText.textContent = text('promptInitial');
+      focusBox.textContent = text('targetInitial', { total: questions.length });
+      coachEl.textContent = text('initialCoach');
+      renderHouses('');
+    }
+
+    function updateHud() {
+      scoreEl.textContent = score;
+      comboEl.textContent = 'x' + combo;
+      timeEl.textContent = timeLeft;
+      const percent = Math.round((current / questions.length) * 100);
+      progressEl.style.width = percent + '%';
+      progressText.textContent = percent + '%';
+    }
+
+    function showQuestion() {
+      if (current >= questions.length) {
+        finish(true);
+        return;
+      }
+
+      const q = questions[current];
+      missionTag.textContent = text('missionCurrent', { current: current + 1, total: questions.length });
+      signalEl.textContent = localized(q.signal);
+      questionEl.textContent = localized(q.title);
+      promptText.textContent = text('promptPlay');
+      focusBox.textContent = text('targetCurrent', { current: current + 1, total: questions.length });
+      coachEl.textContent = currentLang === 'en'
+        ? 'Read the question, review the pattern row, and choose carefully.'
+        : 'Đọc câu hỏi, xem lại dãy số, rồi chọn cẩn thận.';
+
+      answersEl.innerHTML = '';
+      q.answers.forEach((answer, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'answer';
+        btn.textContent = localized(answer);
+        btn.addEventListener('click', () => chooseAnswer(btn, index));
+        answersEl.appendChild(btn);
+      });
+
+      renderHouses(q.highlight);
+      updateHud();
+    }
+
+    function chooseAnswer(button, index) {
+      if (!active) return;
+      const q = questions[current];
+      const buttons = [...document.querySelectorAll('.answer')];
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (index === q.correct) {
+        button.classList.add('correct');
+        playCorrectSound();
+        const speedBonus = timeLeft > 52 ? 25 : timeLeft > 28 ? 15 : 8;
+        const earned = 100 * combo + speedBonus;
+        score += earned;
+        scoreExplosion('+' + earned, button);
+        combo = Math.min(combo + 1, 5);
+        comboGlow();
+        if (combo >= 3) comboRibbon(text('comboRibbon', { combo }));
+        coachEl.textContent = localized(q.coach);
+        current += 1;
+        updateHud();
+        setTimeout(showQuestion, 850);
+      } else {
+        button.classList.add('wrong');
+        buttons[q.correct].classList.add('correct');
+        playWrongSound();
+        scoreExplosion('-6s', button, true);
+        combo = 1;
+        timeLeft = Math.max(0, timeLeft - 6);
+        coachEl.textContent = text('wrongCoach');
+        updateHud();
+        if (timeLeft <= 0) {
+          setTimeout(() => finish(false), 550);
+          return;
+        }
+        setTimeout(() => {
+          current += 1;
+          showQuestion();
+        }, 1500);
+      }
+    }
+
+    function tick() {
+      if (!active) return;
+      playTickSound();
+      clockPill.classList.remove('tick-beat');
+      void clockPill.offsetWidth;
+      clockPill.classList.add('tick-beat');
+      timeLeft -= 1;
+      updateHud();
+      if (timeLeft <= 0) finish(false);
+    }
+
+    function startGame() {
+      active = true;
+      current = 0;
+      score = 0;
+      combo = 1;
+      timeLeft = START_TIME;
+      introScreen.classList.remove('show');
+      resultScreen.className = 'result-screen';
+      playStartSound();
+      showQuestion();
+      clearInterval(timer);
+      timer = setInterval(tick, 1000);
+    }
+
+    function resetGame(showIntro = true) {
+      active = false;
+      clearInterval(timer);
+      current = 0;
+      score = 0;
+      combo = 1;
+      timeLeft = START_TIME;
+      resultScreen.className = 'result-screen';
+      if (showIntro) introScreen.classList.add('show');
+      setStaticLanguage();
+      missionTag.textContent = text('missionZero', { total: questions.length });
+      signalEl.textContent = text('ready');
+      questionEl.textContent = text('initialQuestion');
+      promptText.textContent = text('promptInitial');
+      focusBox.textContent = text('targetInitial', { total: questions.length });
+      coachEl.textContent = text('initialCoach');
+      answersEl.innerHTML = '';
+      renderHouses('');
+      updateHud();
+    }
+
+    function finish(won, languageOnly = false) {
+      if (!languageOnly) {
+        active = false;
+        clearInterval(timer);
+      }
+      updateHud();
+      finalScore.textContent = score;
+      resultKicker.textContent = won ? text('resultKickerWon') : text('resultKickerLost');
+      resultTitle.textContent = won ? text('resultTitleWon') : text('resultTitleLost');
+      resultMessage.textContent = won
+        ? text('winMessage')
+        : text('loseMessage');
+      resultScreen.className = 'result-screen show ' + (won ? 'won' : 'lost');
+      if (languageOnly) return;
+      if (won) {
+        playVictorySound();
+        victoryConfetti();
+      } else {
+        playWrongSound();
+        const point = centerOf(gameEl);
+        burst(point.x, point.y, 'bad', 28);
+      }
+    }
+
+    introStartBtn.addEventListener('click', startGame);
+    playAgainBtn.addEventListener('click', startGame);
+    languageToggle.addEventListener('click', () => {
+      currentLang = currentLang === 'en' ? 'vi' : 'en';
+      refreshLanguage();
+    });
+    soundToggle.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundToggle.textContent = soundEnabled ? text('soundOn') : text('soundOff');
+      if (soundEnabled) playStartSound();
+    });
+
+    resetGame(true);
+  </script>
+</body>
+</html>
